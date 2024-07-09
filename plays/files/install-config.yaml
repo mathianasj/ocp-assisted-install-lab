@@ -6,7 +6,7 @@ compute:
   name: worker
   replicas: 2
   platform:
-    none: {}
+    baremetal: {}
 controlPlane:
   architecture: amd64
   hyperthreading: Enabled

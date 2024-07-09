@@ -17,3 +17,5 @@ master1.ocp       IN A    192.168.122.3
 master2.ocp       IN A    192.168.122.4
 worker0.ocp       IN A    192.168.122.5
 worker1.ocp       IN A    192.168.122.6
+worker2.ocp       IN A    192.168.122.7
+worker3.ocp       IN A    192.168.122.8

@@ -20,6 +20,8 @@
       - { "vm_name": "master2", "vm_ip": "192.168.122.4", "vm_mac": "52:54:00:44:96:b7" }
       - { "vm_name": "worker0", "vm_ip": "192.168.122.5", "vm_mac": "52:54:00:44:96:b8" }
       - { "vm_name": "worker1", "vm_ip": "192.168.122.6", "vm_mac": "52:54:00:44:96:b9" }
+      - { "vm_name": "worker2", "vm_ip": "192.168.122.7", "vm_mac": "52:54:00:44:96:c1" }
+      - { "vm_name": "worker3", "vm_ip": "192.168.122.8", "vm_mac": "52:54:00:44:96:c2" }
     become: true
     when: "item.vm_name not in existing_vms.list_vms"
   - name: Define vms
@@ -33,6 +35,8 @@
       - { "vm_name": "master2", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b7" }
       - { "vm_name": "worker0", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b8" }
       - { "vm_name": "worker1", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b9" }
+      - { "vm_name": "worker2", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:c1" }
+      - { "vm_name": "worker3", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:c2" }
     become: true
 
   - name: Create vmshosts directory for storage
@@ -90,10 +94,12 @@
       cmd: "qemu-img create -f qcow2 {{ item.vm_name }}.qcow2 120G"
       creates: "/vmhosts/{{ item.vm_name }}.qcow2"
     with_items:
-      - { "vm_name": "master0", "vm_ip": "192.168.122.2", "vm_mac": "52:54:00:44:96:b5" }
-      - { "vm_name": "master1", "vm_ip": "192.168.122.3", "vm_mac": "52:54:00:44:96:b6" }
-      - { "vm_name": "master2", "vm_ip": "192.168.122.4", "vm_mac": "52:54:00:44:96:b7" }
-      - { "vm_name": "worker0", "vm_ip": "192.168.122.5", "vm_mac": "52:54:00:44:96:b8" }
-      - { "vm_name": "worker1", "vm_ip": "192.168.122.6", "vm_mac": "52:54:00:44:96:b9" }
+      - { "vm_name": "master0" }
+      - { "vm_name": "master1" }
+      - { "vm_name": "master2" }
+      - { "vm_name": "worker0" }
+      - { "vm_name": "worker1" }
+      - { "vm_name": "worker2" }
+      - { "vm_name": "worker3" }
     become: true
-    # when: "item.vm_name not in existing_vms.list_vms"
+    when: "item.vm_name not in existing_vms.list_vms"

@@ -14,3 +14,5 @@ $TTL 8h
 4                 IN PTR    master2.ocp.ocpbaremetal.com.
 5                 IN PTR    worker0.ocp.ocpbaremetal.com.
 6                 IN PTR    worker1.ocp.ocpbaremetal.com.
+7                 IN PTR    worker2.ocp.ocpbaremetal.com.
+8                 IN PTR    worker3.ocp.ocpbaremetal.com.
