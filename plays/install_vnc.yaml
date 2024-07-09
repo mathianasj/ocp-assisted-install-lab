@@ -1,0 +1,98 @@
+---
+- name: install and configure vnc
+  hosts: vm_baremetal
+  tasks:
+  - name: be sure tigervnc-server is installed
+    yum:
+      name: tigervnc-server
+      state: present
+    tags: tigervnc-server
+    become: true
+  - name: be sureg gnome-session-wayland-session is installed
+    yum:
+      name: gnome-session-wayland-session
+      state: present
+    tags: gnome-session-wayland-session
+    become: true
+  - name: be sureg firefox is installed
+    yum:
+      name: firefox
+      state: present
+    tags: firefox 
+    become: true
+  - name: be sure gnome-terminal is installed
+    yum:
+      name: gnome-terminal
+      state: present
+    tags: gnome-terminal 
+    become: true
+
+  - name: Set VNC password for VNC user
+    block:
+    - name: Create .vnc directory for VNC user
+      ansible.builtin.file:
+        path: /home/ec2-user/.vnc
+        state: directory
+        mode: 0755
+        owner: "ec2-user"
+        group: "ec2-user"
+
+    - name: Set VNC password for VNC user
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo supersecret | vncpasswd -f > /home/ec2-user/.vnc/passwd
+      args:
+        executable: /bin/bash
+        creates: /home/ec2-user/.vnc/passwd
+
+    - name: Set correct permissions for VNC passwd file
+      ansible.builtin.file:
+        path: /home/ec2-user/.vnc/passwd
+        owner: "ec2-user"
+        group: "ec2-user"
+        mode: 0600
+  - name: Copy file with owner and permissions
+    ansible.builtin.copy:
+      src: files/vncserver.users
+      dest: /etc/tigervnc/vncserver.users
+    become: true
+  - name: Copy vncservice file
+    ansible.builtin.copy:
+      src: files/vncserver.service
+      dest: /etc/systemd/system/vncserver@.service
+    become: true
+  - name: Enable a vnc server
+    ansible.builtin.systemd_service:
+      name: vncserver@:2
+      daemon_reload: true
+      state: started
+      enabled: true
+    become: true
+  - name: Enable epel key
+    rpm_key:
+      state: present
+      key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
+    become: true
+  - name: Install epel
+    ansible.builtin.yum:
+      name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+      state: present
+    become: true
+  - name: Install novnc
+    ansible.builtin.yum:
+      name: novnc
+      state: present
+    become: true
+
+  - name: Copy novnc service
+    become: true
+    ansible.builtin.copy:
+      src: files/novnc.service
+      dest: /etc/systemd/system/novnc.service
+  - name: Enable a novnc
+    ansible.builtin.systemd_service:
+      name: novnc
+      state: started
+      daemon_reload: true
+      enabled: true
+    become: true

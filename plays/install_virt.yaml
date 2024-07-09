@@ -1,0 +1,81 @@
+
+
+---
+- name: install and configure virt and cockpit
+  hosts: vm_baremetal
+  tasks:
+  - name: set ec2-user password
+    ansible.builtin.user:
+      name: ec2-user
+      password: "{{ 'supersecret' | password_hash }}"
+    become: true
+  - name: be sure qemu-kvm is installed
+    yum:
+      name: qemu-kvm
+      state: present
+    tags: qemu-kvm
+    become: true
+  - name: be sure nmstate  is installed
+    yum:
+      name: nmstate
+      state: present
+    tags: nmstate
+    become: true
+  - name: be sure libvirt is installed
+    yum:
+      name: libvirt
+      state: present
+    tags: libvirt
+    become: true
+  - name: be sure virt-install is installed
+    yum:
+      name: virt-install
+      state: present
+    tags: virt-install
+    become: true
+  - name: be sure cockpit is installed
+    yum:
+      name: cockpit
+      state: present
+    tags: cockpit
+    become: true
+  - name: be sure cockpit-machines is installed
+    yum:
+      name: cockpit-machines
+      state: present
+    tags: cockpit-machines
+    become: true
+  - name: "Enable virt services"
+    become: true
+    ansible.builtin.systemd_service:
+      name: "{{ item }}"
+      state: started
+      enabled: true
+    loop:
+      - virtqemud.socket
+      - virtqemud-ro.socket
+      - virtqemud-admin.socket
+      - virtnetworkd.socket
+      - virtnetworkd-ro.socket
+      - virtnetworkd-admin.socket
+      - virtnodedevd.socket
+      - virtnodedevd-ro.socket
+      - virtnodedevd-admin.socket
+      - virtnwfilterd.socket
+      - virtnwfilterd-ro.socket
+      - virtnwfilterd-admin.socket
+      - virtsecretd.socket
+      - virtsecretd-ro.socket
+      - virtsecretd-admin.socket
+      - virtstoraged.socket
+      - virtstoraged-ro.socket
+      - virtstoraged-admin.socket
+      - virtinterfaced.socket
+      - virtinterfaced-ro.socket
+      - virtinterfaced-admin.socket
+  - name: "Enable cockpit services"
+    become: true
+    ansible.builtin.systemd_service:
+      name: cockpit
+      state: started
+      enabled: true

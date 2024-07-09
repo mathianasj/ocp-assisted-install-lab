@@ -1,0 +1,31 @@
+---
+- name: install and configure vnc
+  hosts: vm_baremetal
+  tasks:
+  - name: Create bin directory for tools
+    ansible.builtin.file:
+      path: /home/ec2-user/bin
+      state: directory
+      owner: "ec2-user"
+      group: "ec2-user"
+  - name: Download openshift-install
+    ansible.builtin.get_url:
+      url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-install-linux.tar.gz
+      dest: /home/ec2-user/Downloads
+      mode: '0666'
+      checksum: 'sha1:a056c0d683fd6737d15136166bb5af9f298e2695'
+  - name: Extract openshift install
+    ansible.builtin.unarchive:
+      src: /home/ec2-user/Downloads/openshift-install-linux.tar.gz
+      dest: /home/ec2-user/bin
+      remote_src: yes
+  - name: Download openshift cli 
+    ansible.builtin.get_url:
+      url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz
+      dest: /home/ec2-user/Downloads
+      mode: '0666'
+  - name: Extract openshift cli
+    ansible.builtin.unarchive:
+      src: /home/ec2-user/Downloads/openshift-client-linux.tar.gz
+      dest: /home/ec2-user/bin
+      remote_src: yes

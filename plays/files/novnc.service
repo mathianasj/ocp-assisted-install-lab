@@ -1,0 +1,8 @@
+[Unit]
+Description=noVNC Server
+Requires=network.target
+After=syslog.target network.target
+[Service]
+ExecStart=/usr/bin/novnc_server --vnc localhost:5902
+[Install]
+WantedBy=multi-user.target

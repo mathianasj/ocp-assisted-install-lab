@@ -1,0 +1,99 @@
+---
+- name: configure vms for install
+  hosts: vm_baremetal
+  tasks:
+  - name: Get VMs list
+    community.libvirt.virt:
+      command: list_vms
+    register: existing_vms
+    changed_when: no
+    become: true
+
+  - name: Add a new host in the dhcp pool
+    community.libvirt.virt_net:
+      name: default
+      command: modify
+      xml: "<host mac='{{ item.vm_mac }}' name='{{ item.vm_name }}' ip='{{ item.vm_ip }}'/>"
+    with_items:
+      - { "vm_name": "master0", "vm_ip": "192.168.122.2", "vm_mac": "52:54:00:44:96:b5" }
+      - { "vm_name": "master1", "vm_ip": "192.168.122.3", "vm_mac": "52:54:00:44:96:b6" }
+      - { "vm_name": "master2", "vm_ip": "192.168.122.4", "vm_mac": "52:54:00:44:96:b7" }
+      - { "vm_name": "worker0", "vm_ip": "192.168.122.5", "vm_mac": "52:54:00:44:96:b8" }
+      - { "vm_name": "worker1", "vm_ip": "192.168.122.6", "vm_mac": "52:54:00:44:96:b9" }
+    become: true
+    when: "item.vm_name not in existing_vms.list_vms"
+  - name: Define vms
+    community.libvirt.virt:
+      command: define
+      xml: "{{ lookup('template', 'files/vm.xml.j2') }}"
+    when: "item.vm_name not in existing_vms.list_vms"
+    with_items:
+      - { "vm_name": "master0", "vm_ram": "24", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b5" }
+      - { "vm_name": "master1", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b6" }
+      - { "vm_name": "master2", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b7" }
+      - { "vm_name": "worker0", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b8" }
+      - { "vm_name": "worker1", "vm_ram": "16", "vm_cpu": "4", "vm_mac": "52:54:00:44:96:b9" }
+    become: true
+
+  - name: Create vmshosts directory for storage
+    ansible.builtin.file:
+      path: /vmhosts
+      state: directory
+      mode: '0777'
+    become: true
+
+  - name: List available pools
+    community.libvirt.virt_pool:
+      command: list_pools
+    become: true
+    register: storage_pools
+  - name: Print the storage pools
+    ansible.builtin.debug:
+      msg: "{{ storage_pools }}"
+  - name: Define a new storage pool
+    community.libvirt.virt_pool:
+      command: define
+      name: vms
+      xml: '{{ lookup("template", "files/storage.xml") }}'
+    become: true
+    when: "'default' not in storage_pools.list_pools"
+
+  - name: Build a storage pool if it does not exist
+    community.libvirt.virt_pool:
+      command: build
+      name: default
+    become: true
+    when: "'default' not in storage_pools.list_pools"
+
+  - name: Create a storage pool
+    community.libvirt.virt_pool:
+      command: create
+      name: default
+    become: true
+    when: "'default' not in storage_pools.list_pools"
+
+  - name: Ensure that a pool is active (needs to be defined and built first)
+    community.libvirt.virt_pool:
+      state: active
+      name: default
+    become: true
+
+  - name: Ensure that a given pool will be started at boot
+    community.libvirt.virt_pool:
+      autostart: true
+      name: default
+    become: true
+
+  - name: create hd images
+    shell:
+      chdir: /vmhosts
+      cmd: "qemu-img create -f qcow2 {{ item.vm_name }}.qcow2 120G"
+      creates: "/vmhosts/{{ item.vm_name }}.qcow2"
+    with_items:
+      - { "vm_name": "master0", "vm_ip": "192.168.122.2", "vm_mac": "52:54:00:44:96:b5" }
+      - { "vm_name": "master1", "vm_ip": "192.168.122.3", "vm_mac": "52:54:00:44:96:b6" }
+      - { "vm_name": "master2", "vm_ip": "192.168.122.4", "vm_mac": "52:54:00:44:96:b7" }
+      - { "vm_name": "worker0", "vm_ip": "192.168.122.5", "vm_mac": "52:54:00:44:96:b8" }
+      - { "vm_name": "worker1", "vm_ip": "192.168.122.6", "vm_mac": "52:54:00:44:96:b9" }
+    become: true
+    # when: "item.vm_name not in existing_vms.list_vms"

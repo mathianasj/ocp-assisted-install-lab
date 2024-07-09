@@ -1,0 +1,7 @@
+---
+# - import_playbook: ./plays/install_vnc.yaml
+# - import_playbook: ./plays/install_ocptools.yaml
+# - import_playbook: ./plays/install_virt.yaml
+# - import_playbook: ./plays/install_dns.yaml
+# - import_playbook: ./plays/create_vms.yaml
+- import_playbook: ./plays/setup_lab.yaml

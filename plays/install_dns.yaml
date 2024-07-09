@@ -1,0 +1,45 @@
+
+
+---
+- name: install and configure virt and cockpit
+  hosts: vm_baremetal
+  tasks:
+  - name: be sure bind is installed
+    yum:
+      name: bind
+      state: present
+    tags: bind
+    become: true
+  - name: be sure bind-utils is installed
+    yum:
+      name: bind-utils
+      state: present
+    tags: bind-utils
+    become: true
+  - name: Copy named.conf
+    ansible.builtin.copy:
+      src: files/named.conf
+      dest: /etc/named.conf
+    become: true
+  - name: Copy forward zone
+    ansible.builtin.copy:
+      src: files/ocpbaremetal.zone
+      dest: /var/named/ocpbaremetal.com.zone
+    become: true
+  - name: Copy reverse zone
+    ansible.builtin.copy:
+      src: files/122.168.192.in-addr.arpa.zone
+      dest: /var/named/122.168.192.in-addr.arpa.zone
+    become: true
+  - name: Enable dns
+    ansible.builtin.systemd_service:
+      name: named
+      state: restarted
+      daemon_reload: true
+      enabled: true
+    become: true
+  - name: Copy resolv.conf
+    ansible.builtin.copy:
+      src: files/resolv.conf
+      dest: /etc/resolv.conf
+    become: true

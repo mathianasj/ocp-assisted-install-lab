@@ -1,0 +1,16 @@
+$TTL 8h
+@ IN SOA ns1.ocpbaremetal.com. hostmaster.ocpbaremetal.com. (
+                          2022070601 ; serial number
+                          1d         ; refresh period
+                          3h         ; retry period
+                          3d         ; expire time
+                          3h )       ; minimum TTL
+
+                  IN NS   ns1.ocpbaremetal.com.
+
+250               IN PTR    api.ocp.ocpbaremetal.com.
+2                 IN PTR    master0.ocp.ocpbaremetal.com.
+3                 IN PTR    master1.ocp.ocpbaremetal.com.
+4                 IN PTR    master2.ocp.ocpbaremetal.com.
+5                 IN PTR    worker0.ocp.ocpbaremetal.com.
+6                 IN PTR    worker1.ocp.ocpbaremetal.com.

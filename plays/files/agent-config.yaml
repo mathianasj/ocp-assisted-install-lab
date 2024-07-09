@@ -1,0 +1,101 @@
+apiVersion: v1beta1
+kind: AgentConfig
+metadata:
+  name: sno-cluster
+rendezvousIP: 192.168.122.2 
+hosts: 
+  - hostname: master0.ocp.ocpbaremetal.com 
+    interfaces:
+      - name: enp1s0
+        macAddress: 52:54:00:44:96:b5
+    rootDeviceHints: 
+      deviceName: /dev/vda
+    networkConfig: 
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 52:54:00:44:96:b5
+          ipv4:
+            enabled: true
+            dhcp: true
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
+  - hostname: master1.ocp.ocpbaremetal.com
+    interfaces:
+      - name: enp1s0
+        macAddress: 52:54:00:44:96:b6
+    rootDeviceHints:
+      deviceName: /dev/vda
+    networkConfig:
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 52:54:00:44:96:b6
+          ipv4:
+            enabled: true
+            dhcp: true
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
+  - hostname: master2.ocp.ocpbaremetal.com
+    interfaces:
+      - name: enp1s0
+        macAddress: 52:54:00:44:96:b7
+    rootDeviceHints:
+      deviceName: /dev/vda
+    networkConfig:
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 52:54:00:44:96:b7
+          ipv4:
+            enabled: true
+            dhcp: true
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
+  - hostname: worker0.ocp.ocpbaremetal.com
+    interfaces:
+      - name: enp1s0
+        macAddress: 52:54:00:44:96:b8
+    rootDeviceHints:
+      deviceName: /dev/vda
+    networkConfig:
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 52:54:00:44:96:b8
+          ipv4:
+            enabled: true
+            dhcp: true
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
+  - hostname: worker1.ocp.ocpbaremetal.com
+    interfaces:
+      - name: enp1s0
+        macAddress: 52:54:00:44:96:b9
+    rootDeviceHints:
+      deviceName: /dev/vda
+    networkConfig:
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 52:54:00:44:96:b9
+          ipv4:
+            enabled: true
+            dhcp: true
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
