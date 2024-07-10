@@ -3,6 +3,6 @@ Description=noVNC Server
 Requires=network.target
 After=syslog.target network.target
 [Service]
-ExecStart=/usr/bin/novnc_server --vnc localhost:5902
+ExecStart=/usr/bin/novnc_server --key /etc/ssl/{{ vm_host }}.{{ route53_domain }}/{{ vm_host }}.{{ route53_domain }}.key --cert /etc/ssl/{{ vm_host }}.{{ route53_domain }}/{{ vm_host }}.{{ route53_domain }}.crt --vnc localhost:5902    
 [Install]
 WantedBy=multi-user.target

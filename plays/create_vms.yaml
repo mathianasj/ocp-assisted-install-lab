@@ -1,6 +1,6 @@
 ---
 - name: configure vms for install
-  hosts: vm_baremetal
+  hosts: aws_ec2
   tasks:
   - name: Get VMs list
     community.libvirt.virt:

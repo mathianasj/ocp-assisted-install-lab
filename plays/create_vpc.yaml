@@ -1,0 +1,46 @@
+---
+- name: configure vms for install
+  hosts: localhost
+  tasks:
+  - name: Create a VPC with dedicated tenancy
+    amazon.aws.ec2_vpc_net:
+      name: ocp_baremetal_lab
+      cidr_block: 10.0.0.0/16
+      region: us-east-2
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+    register: vpc
+  - name: Create subnet
+    amazon.aws.ec2_vpc_subnet:
+      state: present
+      vpc_id: "{{ vpc.vpc.id }}"
+      cidr: 10.0.0.0/20
+      map_public: true
+      tags:
+        Name: vmhosts
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+    register: subnet
+  - name: Create Internet gateway
+    amazon.aws.ec2_vpc_igw:
+      vpc_id: "{{ vpc.vpc.id }}"
+      state: present
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+    register: igw
+  - name: Set up public subnet route table
+    amazon.aws.ec2_vpc_route_table:
+      vpc_id: "{{ vpc.vpc.id }}"
+      region: us-east-2
+      tags:
+        Name: Public
+      subnets:
+        - "{{ subnet.subnet.id }}"
+      routes:
+        - dest: 0.0.0.0/0
+          gateway_id: "{{ igw.gateway_id }}"
+        - dest: ::/0
+          gateway_id: "{{ igw.gateway_id }}"
+      access_key: "{{ aws_access_key }}"
+      secret_key: "{{ aws_secret_key }}"
+    register: public_route_table

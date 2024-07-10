@@ -1,0 +1,57 @@
+---
+- name: Configure vms for install
+  hosts: localhost
+  tasks:
+    - name: Security group for vmhosts
+      amazon.aws.ec2_security_group:
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        name: "vmhosts_sg"
+        description: sg with rule descriptions
+        vpc_id: "{{ vpc.vpc.id }}"
+        rules:
+          - proto: tcp
+            ports:
+              - 6080
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 6080
+          - proto: tcp
+            ports:
+              - 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 22
+      register: security_group
+    - name: Start an instance with a public IP address
+      amazon.aws.ec2_instance:
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        name: "vmhost-{{ item }}"
+        key_name: "macbook"
+        vpc_subnet_id: "{{ subnet.subnet.id }}"
+        instance_type: c5.metal
+        security_group: "{{ security_group.group_id }}"
+        network:
+          assign_public_ip: true
+        image_id: ami-0aa8fc2422063977a
+        volumes:
+          - device_name: /dev/sda1
+            ebs:
+              volume_size: 1200
+              delete_on_termination: true
+      with_sequence: start=1 end=1
+      register: vms
+    - name: Print vms output
+      ansible.builtin.debug:
+        msg: "{{ vms }}"
+    - name: Register vm hostname dns entry
+      amazon.aws.route53:
+        access_key: "{{ aws_access_key }}"
+        secret_key: "{{ aws_secret_key }}"
+        state: present
+        zone: "{{ route53_domain }}"
+        record: "vmhost-{{ item }}.{{ route53_domain }}"
+        type: A
+        ttl: 30
+        value: "{{ vms.results[((item|int)-1)|int|abs].instances[0].network_interfaces[0].association.public_ip }}"
+        wait: true
+      with_sequence: start=1 end=1

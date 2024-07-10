@@ -2,7 +2,7 @@
 
 ---
 - name: install and configure virt and cockpit
-  hosts: vm_baremetal
+  hosts: aws_ec2
   tasks:
   - name: be sure bind is installed
     yum:

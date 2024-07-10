@@ -1,6 +1,6 @@
 ---
 - name: setup lab environment
-  hosts: vm_baremetal
+  hosts: aws_ec2
   tasks:
     - name: Create my-cluster directory
       ansible.builtin.file:
