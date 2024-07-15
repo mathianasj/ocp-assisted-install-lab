@@ -26,3 +26,8 @@
       ansible.builtin.copy:
         src: files/agent-config.yaml
         dest: /home/ec2-user/my-cluster/agent-config.yaml
+    - name: Copy pull secret
+      become: true
+      ansible.builtin.copy:
+        content: "{{ ocp_pull_secret }}"
+        dest: /home/ec2-user/pullsecret.json

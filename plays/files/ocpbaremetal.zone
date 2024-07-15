@@ -19,3 +19,7 @@ worker0.ocp       IN A    192.168.122.5
 worker1.ocp       IN A    192.168.122.6
 worker2.ocp       IN A    192.168.122.7
 worker3.ocp       IN A    192.168.122.8
+
+api.test1         IN A    192.168.122.5
+api-int.test1     IN A    192.168.122.5
+*.apps.test1      IN A    192.168.122.8

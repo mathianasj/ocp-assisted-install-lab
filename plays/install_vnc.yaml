@@ -11,6 +11,12 @@
   roles:
    - ansible-role-lets-encrypt-route-53
   tasks:
+  - name: be sure wget is installed
+    yum:
+      name: wget
+      state: present
+    tags: wget
+    become: true
   - name: be sure tigervnc-server is installed
     yum:
       name: tigervnc-server
