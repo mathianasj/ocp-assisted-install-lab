@@ -1,8 +1,7 @@
-
-
 ---
 - name: install and configure virt and cockpit
   hosts: aws_ec2
+  become: true
   tasks:
   - name: be sure bind is installed
     yum:

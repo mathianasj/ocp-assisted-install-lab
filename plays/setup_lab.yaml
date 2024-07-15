@@ -1,6 +1,7 @@
 ---
 - name: setup lab environment
   hosts: aws_ec2
+  become: true
   tasks:
     - name: Create my-cluster directory
       ansible.builtin.file:
@@ -12,6 +13,8 @@
     - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
       community.crypto.openssh_keypair:
         path: /home/ec2-user/.ssh/id_rsa
+        owner: "ec2-user"
+        group: "ec2-user"
       register: sshkey
     - name: Copy install-config
       become: true

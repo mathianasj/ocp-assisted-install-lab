@@ -1,6 +1,7 @@
 ---
-- name: install and configure vnc
+- name: install ocp tools
   hosts: aws_ec2
+  become: true
   tasks:
   - name: Create bin directory for tools
     ansible.builtin.file:

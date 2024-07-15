@@ -31,5 +31,5 @@ platform:
       - 192.168.122.250
     ingressVIPs:
       - 192.168.122.251
-pullSecret: '{{ ocp_pull_secret | to_json }}' 
+pullSecret: '{{ ocp_pull_secret }}' 
 sshKey: '{{ sshkey.public_key }}'

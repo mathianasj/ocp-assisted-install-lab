@@ -4,7 +4,8 @@ metadata:
   name: sno-cluster
 rendezvousIP: 192.168.122.2 
 hosts: 
-  - hostname: master0.ocp.ocpbaremetal.com 
+  - hostname: master0.ocp.ocpbaremetal.com
+    role: master
     interfaces:
       - name: enp1s0
         macAddress: 52:54:00:44:96:b5
@@ -24,6 +25,7 @@ hosts:
           server:
             - 192.168.122.1
   - hostname: master1.ocp.ocpbaremetal.com
+    role: master
     interfaces:
       - name: enp1s0
         macAddress: 52:54:00:44:96:b6
@@ -43,6 +45,7 @@ hosts:
           server:
             - 192.168.122.1
   - hostname: master2.ocp.ocpbaremetal.com
+    role: master
     interfaces:
       - name: enp1s0
         macAddress: 52:54:00:44:96:b7
@@ -62,6 +65,7 @@ hosts:
           server:
             - 192.168.122.1
   - hostname: worker0.ocp.ocpbaremetal.com
+    role: worker
     interfaces:
       - name: enp1s0
         macAddress: 52:54:00:44:96:b8
@@ -81,6 +85,7 @@ hosts:
           server:
             - 192.168.122.1
   - hostname: worker1.ocp.ocpbaremetal.com
+    role: worker
     interfaces:
       - name: enp1s0
         macAddress: 52:54:00:44:96:b9

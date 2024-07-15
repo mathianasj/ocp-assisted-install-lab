@@ -1,6 +1,7 @@
 ---
 - name: configure vms for install
   hosts: aws_ec2
+  become: true
   tasks:
   - name: Get VMs list
     community.libvirt.virt:
@@ -95,11 +96,18 @@
       creates: "/vmhosts/{{ item.vm_name }}.qcow2"
     with_items:
       - { "vm_name": "master0" }
+      - { "vm_name": "master0-odf" }
       - { "vm_name": "master1" }
+      - { "vm_name": "master1-odf" }
       - { "vm_name": "master2" }
+      - { "vm_name": "master2-odf" }
       - { "vm_name": "worker0" }
+      - { "vm_name": "worker0-odf" }
       - { "vm_name": "worker1" }
+      - { "vm_name": "worker1-odf" }
       - { "vm_name": "worker2" }
+      - { "vm_name": "worker2-odf" }
       - { "vm_name": "worker3" }
+      - { "vm_name": "worker3-odf" }
     become: true
     when: "item.vm_name not in existing_vms.list_vms"

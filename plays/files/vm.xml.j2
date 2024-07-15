@@ -28,6 +28,12 @@
       <boot order='1'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' discard='unmap'/>
+      <source file='/vmhosts/{{ item.vm_name }}-odf.qcow2'/>
+      <target dev='vdb' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </disk>
     <interface type='network'>
       <mac address='{{ item.vm_mac }}'/>
       <source network='default'/>

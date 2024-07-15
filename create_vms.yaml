@@ -1,4 +1,5 @@
 ---
-- import_playbook: ./plays/create_vpc.yaml
-- import_playbook: ./plays/create_ec2.yaml
-# - import_playbook: ./plays/create_route53.yaml
+- name: Create VPC
+  import_playbook: ./plays/create_vpc.yaml
+- name: Create EC2 instances
+  import_playbook: ./plays/create_ec2.yaml

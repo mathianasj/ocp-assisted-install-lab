@@ -38,7 +38,7 @@
             ebs:
               volume_size: 1200
               delete_on_termination: true
-      with_sequence: start=1 end=1
+      with_sequence: start=1 end={{ lab_size }}
       register: vms
     - name: Print vms output
       ansible.builtin.debug:
@@ -54,4 +54,5 @@
         ttl: 30
         value: "{{ vms.results[((item|int)-1)|int|abs].instances[0].network_interfaces[0].association.public_ip }}"
         wait: true
-      with_sequence: start=1 end=1
+        overwrite: true
+      with_sequence: start=1 end={{ lab_size }}
