@@ -17,6 +17,11 @@
             rule_desc: allow all on port 6080
           - proto: tcp
             ports:
+              - 80
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 6080
+          - proto: tcp
+            ports:
               - 22
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 22
@@ -28,7 +33,7 @@
         name: "vmhost-{{ item }}"
         key_name: "macbook"
         vpc_subnet_id: "{{ subnet.subnet.id }}"
-        instance_type: c5.metal
+        instance_type: "{{ instance_type }}"
         security_group: "{{ security_group.group_id }}"
         network:
           assign_public_ip: true

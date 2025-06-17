@@ -1,0 +1,43 @@
+---
+- name: install and configure httpd proxy
+  hosts: aws_ec2
+  become: true
+  handlers:
+  - name: Reboot system
+    reboot:
+      msg: "Rebooting for SELinux changes"
+      connect_timeout: 5
+      reboot_timeout: 300
+      pre_reboot_delay: 0
+      post_reboot_delay: 10
+      test_command: whoami
+  tasks:
+  - name: be sure httpd is installed
+    yum:
+      name: httpd
+      state: present
+    tags: httpd
+    become: true
+  - name: be sure mod_ssl is installed
+    yum:
+      name: mod_ssl
+      state: present
+    tags: mod_ssl
+    become: true
+  - name: Copy proxy config
+    become: true
+    ansible.builtin.template:
+      src: files/proxy.conf.j2
+      dest: /etc/httpd/conf.d/proxy.conf
+  - name: Enable httpd server
+    ansible.builtin.systemd_service:
+      name: httpd
+      daemon_reload: true
+      state: started
+      enabled: true
+    become: true
+  - name: disable selinux
+    ansible.posix.selinux:
+      state: disabled
+    notify:
+      - Reboot system

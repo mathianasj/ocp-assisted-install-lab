@@ -1,6 +1,8 @@
 ---
 # - name: Install VNC
 #   import_playbook: ./plays/install_vnc.yaml
+- name: Configure http proxy (noTLS)
+  import_playbook: ./plays/configure_http_proxy.yaml
 # - name: Install OCP Tools
 #   import_playbook: ./plays/install_ocptools.yaml
 # - name: Install Virtualization
@@ -9,5 +11,5 @@
 #   import_playbook: ./plays/install_dns.yaml
 # - name: Create VMs for cluster
 #   import_playbook: ./plays/create_vms.yaml
-- name: Setup lab environment
-  import_playbook: ./plays/setup_lab.yaml
+# - name: Setup lab environment
+#   import_playbook: ./plays/setup_lab.yaml

@@ -1,0 +1,6 @@
+<VirtualHost *:80>
+    SSLProxyEngine on
+    ServerName vmhost-{{ item }}.{{ route53_domain }}
+    ProxyPass / https://vmhost-{{ item }}.{{ route53_domain }}:6080/ upgrade=websocket
+    ProxyPassReverse / https://vmhost-{{ item }}.{{ route53_domain }}:6080/
+</VirtualHost>
